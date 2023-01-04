@@ -10,7 +10,14 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 let userNameSchema = new mongoose.Schema({
   "username"   : String
 });
-let UserDB = mongoose.model('User_008', userNameSchema);
+
+let dbCnt = process.env.DB_CNT
+let userDB = 'User_'+dbCnt;
+let exerciseDB = 'Exercise_'+dbCnt;
+console.log(userDB);
+console.log(exerciseDB);
+
+let UserDB = mongoose.model(userDB, userNameSchema);
 
 let exerciseSchema = new mongoose.Schema({
   username    : String,
@@ -18,8 +25,7 @@ let exerciseSchema = new mongoose.Schema({
   duration    : Number,
   date        : Date,
 })
-let ExerciseDB = mongoose.model('Exercise_008',
-                                exerciseSchema);
+let ExerciseDB = mongoose.model(exerciseDB, exerciseSchema);
 
 
 app.use(bodyParser.urlencoded({ extended: false }));

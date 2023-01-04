@@ -10,7 +10,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 let userNameSchema = new mongoose.Schema({
   "username"   : String
 });
-let UserDB = mongoose.model('User_001', userNameSchema);
+let UserDB = mongoose.model('User_008', userNameSchema);
 
 let exerciseSchema = new mongoose.Schema({
   username    : String,
@@ -18,7 +18,7 @@ let exerciseSchema = new mongoose.Schema({
   duration    : Number,
   date        : Date,
 })
-let ExerciseDB = mongoose.model('Exercise_003',
+let ExerciseDB = mongoose.model('Exercise_008',
                                 exerciseSchema);
 
 
@@ -91,7 +91,9 @@ app.post('/api/users/:id/exercises',(req,res) => {
   }
   else if ( req.body.date == "") {
     req.body.date = new Date().toDateString();
-    console.log(req.body.date);
+  }
+  else {
+    req.body.date = new Date(req.body.date).toDateString();
   }
 
   UserDB.findById(id, function(err,data) {
@@ -102,15 +104,14 @@ app.post('/api/users/:id/exercises',(req,res) => {
       console.log('all good');
       console.log(req.body.date);
       let newExercise = new ExerciseDB({
-         "_id"          : id
-        ,"username"    : data.username
+        "username"    : data.username
         ,"date"        : req.body.date
         ,"duration"    : req.body.duration
         ,"description" : req.body.description
       });
+        console.log("+++> " + newExercise);
       newExercise.save( (err,data) => {
-        let date = data.date.toDateString();
-        console.log("===> " + date);
+        if (err) return console.error(err);
         let response = {
           "_id"          : id
           ,"username"    : data.username

@@ -39,7 +39,9 @@ app.get("/api/users", (req,res) => {
   });
 });
 
+
 app.post('/api/users',(req,res) => {
+  let response;
   if ( req.body.username == "" )
     res.send("NEED A USER NAME");
   else {
@@ -50,12 +52,18 @@ app.post('/api/users',(req,res) => {
         let newUser = new UserDB({"username": req.body.username});
         newUser.save( function(err,data) {
           console.log("CREATED USER" + data);
-          res.json(data);
+          response = {"username" : data.username,
+                      "_id"      : data["_id"]
+                    };
+          return res.json(response);
         });
       }
       else {
         console.log("USERINFO:"+data[0]);
-        res.json(data[0]);
+        response = {"username" : data[0].username,
+                    "_id"      : data[0]["_id"]
+                   };
+        return res.json(response);
       }
     });
   }
@@ -94,19 +102,21 @@ app.post('/api/users/:id/exercises',(req,res) => {
       console.log('all good');
       console.log(req.body.date);
       let newExercise = new ExerciseDB({
-        "username"    : data.username
-        ,"description" : req.body.description
-        ,"duration"    : req.body.duration
+         "_id"          : id
+        ,"username"    : data.username
         ,"date"        : req.body.date
+        ,"duration"    : req.body.duration
+        ,"description" : req.body.description
       });
       newExercise.save( (err,data) => {
         let date = data.date.toDateString();
         console.log("===> " + date);
         let response = {
-          "username"     : data.username
-          ,"description" : data.description
-          ,"duration"    : data.duration
+          "_id"          : id
+          ,"username"    : data.username
           ,"date"        : data.date.toDateString()
+          ,"duration"    : data.duration
+          ,"description" : data.description
         }
         console.log(response);
         return res.json(response);

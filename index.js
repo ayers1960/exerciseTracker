@@ -141,8 +141,6 @@ app.get('/api/users/:id/logs',(req,res) => {
       return  res.send("USER NOT FOUND");
     else {
       let limitSize = 0;
-      console.log("lookfor "+ data.username)
-      console.log("from "+ req.query.from)
       query = {};
       query["username"]  = data.username;
       let dateQ =  {};
@@ -156,10 +154,24 @@ app.get('/api/users/:id/logs',(req,res) => {
         query["date"]      =  dateQ;
       console.log(query) ;
       console.log("LIMIT: " + limitSize);
+      let response = {};
+      response["_id"] = id;
+      response["username"] = data.username;
+      response["count"] = 0
+      response["log"] =[];
       ExerciseDB.find(query,
                       (err,data) => {
-                        console.log("returned data: " + data);
-                        return res.json(data);
+                        response["count"] = data.length;
+                        data.forEach( (usr) => {
+                          let obj = {
+                            description  : usr.description
+                            ,duration     : usr.duration
+                            ,date         : usr.date.toDateString()
+                                    }
+                          response.log.push(obj);
+                        });
+                        console.log(response);
+                        res.json(response);
                       }).limit(limitSize);
     }
   });

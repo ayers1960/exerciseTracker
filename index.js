@@ -102,7 +102,7 @@ app.post('/api/users/:id/exercises',(req,res) => {
     console.log("INVALID DURATION");
     return res.send("INVALID DURATION");
   }
-  else if (typeof(req.body.date === "undefined") ||  req.body.date == "") {
+  else if (typeof(req.body.date) === "undefined" ||  req.body.date == "") {
     console.log("Getting Current Date")
     req.body.date = new Date().toDateString();
   }

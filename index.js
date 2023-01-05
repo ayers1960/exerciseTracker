@@ -83,25 +83,35 @@ app.post('/api/users//exercises',(req,res) => {
 
 
 app.post('/api/users/:id/exercises',(req,res) => {
-  let id = req.body[":_id"];
+  console.log("!!!!!EXERCISES:")
+  console.log(req.body);
+  console.log(req.params);
+//  let id = req.body[":_id"];
+  let id = req.params["id"];
   let duration = Number(req.body.duration);
-
-  if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+  console.log("ID IS "+id)
+  if (typeof(id) === "undefined" || !id.match(/^[0-9a-fA-F]{24}$/)) {
+    console.log("INVALID _ID");
     return res.send("INVALID _ID");
   }
-  else if ( req.body.description == "" ) {
+  else if ( typeof(req.body.description) === "undefined" || req.body.description == "" ) {
+    console.log("INVALID DESCRIPTION");
     return res.send("INVALID DESCRIPTION");
   }
   else if ( !Number.isInteger(duration)) {
+    console.log("INVALID DURATION");
     return res.send("INVALID DURATION");
   }
-  else if ( req.body.date == "") {
+  else if (typeof(req.body.date === "undefined") ||  req.body.date == "") {
+    console.log("Getting Current Date")
     req.body.date = new Date().toDateString();
   }
   else {
+    console.log("Creating DATE from '"+req.body.date+"'");
     req.body.date = new Date(req.body.date).toDateString();
+    console.log("DATE is: "+ req.body.date);
   }
-
+  console.log("looking for "+id);
   UserDB.findById(id, function(err,data) {
     if (err) return console.error(err);
     if (data === null)
